@@ -23,4 +23,7 @@ public interface GenericDAO<T> {
     int delete(int id) throws SQLException, ClassNotFoundException;
 
     T getById(int id) throws SQLException, ClassNotFoundException;
+
+    List<T> search(T Name) throws SQLException, ClassNotFoundException;
+
 }

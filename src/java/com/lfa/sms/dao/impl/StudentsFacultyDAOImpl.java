@@ -20,33 +20,35 @@ import java.util.List;
  * @author sapu
  */
 public class StudentsFacultyDAOImpl implements StudentsFacultyDAO {
-private DbConnection db=new DbConnection();
+
+    private DbConnection db = new DbConnection();
 
     @Override
     public List<StudentsFaculty> getAll() throws SQLException, ClassNotFoundException {
         List<StudentsFaculty> stdFacultyList = new ArrayList<>();
-        String sql = "SELECT * FROM ";
+        String sql = "SELECT * FROM studentfaculty ";
         db.connect();
         db.initStatement(sql);
         ResultSet rs = db.query();
         while (rs.next()) {
             StudentsFaculty sf = new StudentsFaculty();
-            sf.setFac_id(rs.getInt("fac_id"));            
-            sf.setStd_id(rs.getInt("std_id"));            
+            sf.setFac_id(rs.getInt("fac_id"));
+            sf.setStd_id(rs.getInt("std_id"));
             sf.setStdfac_id(rs.getInt("stdfac_id"));
             sf.setJoin_date(rs.getDate("join_date"));
             stdFacultyList.add(sf);
         }
         db.close();
-        return stdFacultyList;}
+        return stdFacultyList;
+    }
 
     @Override
     public int insert(StudentsFaculty t) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO stdFacultys(stdFaculty_name,stdFaculty_code)"
+        String sql = "INSERT INTO studentfaculty()"
                 + "values(?,?)";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
-        
+
         int result = db.update();
         db.close();
         return result;
@@ -54,7 +56,7 @@ private DbConnection db=new DbConnection();
 
     @Override
     public int update(StudentsFaculty t) throws SQLException, ClassNotFoundException {
-      String sql = "UPDATE stdFaculty set name=?,fees=?,status=? "
+        String sql = "UPDATE stdFaculty set name=?,fees=?,status=? "
                 + "WHERE id=?";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
@@ -75,7 +77,8 @@ private DbConnection db=new DbConnection();
         stmt.setInt(1, id);
         int result = db.update();
         db.close();
-        return result;}
+        return result;
+    }
 
     @Override
     public StudentsFaculty getById(int id) throws SQLException, ClassNotFoundException {
@@ -87,11 +90,35 @@ private DbConnection db=new DbConnection();
         ResultSet rs = db.query();
         if (rs.next()) {
             sf = new StudentsFaculty();
-            sf.setFac_id(rs.getInt("fac_id"));            
-            sf.setStd_id(rs.getInt("std_id"));            
+            sf.setFac_id(rs.getInt("fac_id"));
+            sf.setStd_id(rs.getInt("std_id"));
             sf.setStdfac_id(rs.getInt("stdfac_id"));
-            sf.setJoin_date(rs.getDate("join_date"));        }
+            sf.setJoin_date(rs.getDate("join_date"));
+        }
         db.close();
-        return sf;}
-    
+        return sf;
+    }
+
+    @Override
+    public List<StudentsFaculty> search(StudentsFaculty Name) throws SQLException, ClassNotFoundException {
+        List<StudentsFaculty> studentfacultyList = new ArrayList<>();
+        String sql = "SELECT * FROM students "
+                + "where std_name like '%" + Name + "%'"
+                + "or std_address like '%" + Name + "%'";
+        db.connect();
+        db.initStatement(sql);
+        ResultSet rs = db.query();
+        while (rs.next()) {
+            StudentsFaculty sf = new StudentsFaculty();
+            sf.setFac_id(rs.getInt("fac_id"));
+            sf.setStd_id(rs.getInt("std_id"));
+            sf.setStdfac_id(rs.getInt("stdfac_id"));
+            sf.setJoin_date(rs.getDate("join_date"));
+            studentfacultyList.add(sf);
+        }
+
+        db.close();
+        return studentfacultyList;
+    }
+
 }

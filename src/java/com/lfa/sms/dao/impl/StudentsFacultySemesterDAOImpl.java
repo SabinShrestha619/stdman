@@ -99,4 +99,25 @@ public class StudentsFacultySemesterDAOImpl implements StudentsFacultySemestersD
         return sfs;
     }
 
+    @Override
+    public List<StudentsFacultySemesters> search(StudentsFacultySemesters Name) throws SQLException, ClassNotFoundException {
+        List<StudentsFacultySemesters> studentfacultyList = new ArrayList<>();
+        String sql = "SELECT * FROM students "
+                + "where std_name like '%" + Name + "%'"
+                + "or std_address like '%" + Name + "%'";
+        db.connect();
+        db.initStatement(sql);
+        ResultSet rs = db.query();
+        while (rs.next()) {
+            StudentsFacultySemesters sf = new StudentsFacultySemesters();
+            sf.setFac_id(rs.getInt("fac_id"));
+            sf.setStd_id(rs.getInt("std_id"));
+            sf.setStdfac_id(rs.getInt("stdfac_id"));
+            sf.setJoin_date(rs.getDate("join_date"));
+            studentfacultyList.add(sf);
+        }
+        db.close();
+        return studentfacultySemesterList;
+    }
+
 }

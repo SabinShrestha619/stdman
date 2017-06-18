@@ -19,24 +19,26 @@ import java.util.List;
  * @author sapu
  */
 public class CoursesDAOImpl implements CoursesDAO {
-private DbConnection db=new DbConnection();
+
+    private DbConnection db = new DbConnection();
 
     @Override
     public List<Courses> getAll() throws SQLException, ClassNotFoundException {
         List<Courses> courseList = new ArrayList<>();
-        String sql = "SELECT * FROM ";
+        String sql = "SELECT * FROM courses ";
         db.connect();
         db.initStatement(sql);
         ResultSet rs = db.query();
         while (rs.next()) {
             Courses c = new Courses();
-            c.setCourse_id(rs.getInt("course_id"));            
-            c.setCourse_name(rs.getString("course_name"));            
+            c.setCourse_id(rs.getInt("course_id"));
+            c.setCourse_name(rs.getString("course_name"));
             c.setCourse_code(rs.getString("course_code"));
             courseList.add(c);
         }
         db.close();
-        return courseList;}
+        return courseList;
+    }
 
     @Override
     public int insert(Courses t) throws SQLException, ClassNotFoundException {
@@ -53,8 +55,8 @@ private DbConnection db=new DbConnection();
 
     @Override
     public int update(Courses t) throws SQLException, ClassNotFoundException {
-      String sql = "UPDATE course set name=?,fees=?,status=? "
-                + "WHERE id=?";
+        String sql = "UPDATE courses set course_name,course_code=? "
+                + "WHERE course_id=?";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
         stmt.setInt(1, t.getCourse_id());
@@ -67,29 +69,52 @@ private DbConnection db=new DbConnection();
 
     @Override
     public int delete(int id) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM courses where id=?";
+        String sql = "DELETE FROM courses where courses_id=?";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
         stmt.setInt(1, id);
         int result = db.update();
         db.close();
-        return result;}
+        return result;
+    }
 
     @Override
     public Courses getById(int id) throws SQLException, ClassNotFoundException {
         Courses c = null;
-        String sql = "SELECT * FROM courses where id=? ";
+        String sql = "SELECT * FROM courses where courses_id=? ";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
         stmt.setInt(1, id);
         ResultSet rs = db.query();
         if (rs.next()) {
             c = new Courses();
-            c.setCourse_id(rs.getInt("course_id"));            
-            c.setCourse_name(rs.getString("course_name"));            
+            c.setCourse_id(rs.getInt("course_id"));
+            c.setCourse_name(rs.getString("course_name"));
             c.setCourse_code(rs.getString("course_code"));
         }
         db.close();
-        return c;}
-    
+        return c;
+    }
+
+    @Override
+    public List<Courses> search(Courses Name) throws SQLException, ClassNotFoundException {
+        List<Courses> courseList = new ArrayList<>();
+        String sql = "SELECT * FROM students "
+                + "or course_name like '%" + Name + "%'"
+                + "or course_code like '%" + Name + "%'";
+        db.connect();
+        db.initStatement(sql);
+        ResultSet rs = db.query();
+        while (rs.next()) {
+            Courses c = new Courses();
+            c.setCourse_id(rs.getInt("course_id"));
+            c.setCourse_name(rs.getString("course_name"));
+            c.setCourse_code(rs.getString("course_code"));
+            courseList.add(c);
+        }
+        db.close();
+        return courseList;
+       
+    }
+
 }

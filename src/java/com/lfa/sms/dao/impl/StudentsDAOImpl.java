@@ -55,7 +55,7 @@ public class StudentsDAOImpl implements StudentsDAO {
 
     @Override
     public int update(Students t) throws SQLException, ClassNotFoundException {
-        String sql = "UPDATE student set std_name=?,std_address "
+        String sql = "UPDATE students set std_name=?,std_address "
                 + "WHERE std_id=?";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
@@ -96,4 +96,23 @@ public class StudentsDAOImpl implements StudentsDAO {
         return s;
     }
 
+    @Override
+    public List<Students> search(Students Name) throws SQLException, ClassNotFoundException {
+        List<Students> studentList = new ArrayList<>();
+        String sql = "SELECT * FROM students "
+                + "where std_name like '%" + Name + "%'"
+                + "or std_address like '%" + Name + "%'";
+        db.connect();
+        db.initStatement(sql);
+        ResultSet rs = db.query();
+        while (rs.next()) {
+            Students s = new Students();
+            s.setStd_id(rs.getInt("std_id"));
+            s.setStd_name(rs.getString("std_name"));
+            s.setStd_address(rs.getString("std_address"));
+            studentList.add(s);
+        }
+        db.close();
+        return studentList;
+    }
 }

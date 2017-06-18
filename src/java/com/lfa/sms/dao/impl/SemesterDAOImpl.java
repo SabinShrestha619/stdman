@@ -25,7 +25,7 @@ public class SemesterDAOImpl implements SemesterDAO {
     @Override
     public List<Semester> getAll() throws SQLException, ClassNotFoundException {
         List<Semester> semesterList = new ArrayList<>();
-        String sql = "SELECT * FROM ";
+        String sql = "SELECT * FROM semesters ";
         db.connect();
         db.initStatement(sql);
         ResultSet rs = db.query();
@@ -42,8 +42,8 @@ public class SemesterDAOImpl implements SemesterDAO {
 
     @Override
     public int insert(Semester t) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO semesters(semester_name,semester_code)"
-                + "values(?,?)";
+        String sql = "INSERT INTO semesters(sem_name)"
+                + "values(?)";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
         stmt.setString(1, t.getSem_name());
@@ -54,8 +54,8 @@ public class SemesterDAOImpl implements SemesterDAO {
 
     @Override
     public int update(Semester t) throws SQLException, ClassNotFoundException {
-        String sql = "UPDATE semester set name=?,fees=?,status=? "
-                + "WHERE id=?";
+        String sql = "UPDATE semesters set sem_name=? "
+                + "WHERE sem_id=?";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
         stmt.setInt(1, t.getSem_id());
@@ -67,7 +67,7 @@ public class SemesterDAOImpl implements SemesterDAO {
 
     @Override
     public int delete(int id) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM semesters where id=?";
+        String sql = "DELETE FROM semesters where sem_id=?";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
         stmt.setInt(1, id);
@@ -79,7 +79,7 @@ public class SemesterDAOImpl implements SemesterDAO {
     @Override
     public Semester getById(int id) throws SQLException, ClassNotFoundException {
         Semester se = null;
-        String sql = "SELECT * FROM semesters where id=? ";
+        String sql = "SELECT * FROM semesters where sem_id=? ";
         db.connect();
         PreparedStatement stmt = db.initStatement(sql);
         stmt.setInt(1, id);
@@ -92,6 +92,26 @@ public class SemesterDAOImpl implements SemesterDAO {
         }
         db.close();
         return se;
+    }
+
+    @Override
+    public List<Semester> search(Semester Name) throws SQLException, ClassNotFoundException {
+        List<Semester> semesterList = new ArrayList<>();
+        String sql = "SELECT * FROM students "
+                + "where fac_name like '%" + Name + "%'";
+
+        db.connect();
+        db.initStatement(sql);
+        ResultSet rs = db.query();
+        while (rs.next()) {
+            Semester se = new Semester();
+            se.setSem_id(rs.getInt("sem_id"));
+            se.setSem_name(rs.getString("sem_name"));
+
+            semesterList.add(se);
+        }
+        db.close();
+        return semesterList;
     }
 
 }
